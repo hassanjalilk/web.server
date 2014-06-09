@@ -1,7 +1,7 @@
 require 'socket'                                    # Require socket from Ruby Standard Library (stdlib)
 
 host = 'localhost'
-port = 2000
+port = 3754
 
 server = TCPServer.open(host, port)                 # Socket to listen to defined host and port
 puts "Server started on #{host}:#{port} ..."        # Output to stdout that server started
@@ -15,6 +15,20 @@ loop do                                             # Server runs forever
   end
   puts lines                                        # Output the full request to stdout
 
-  client.puts(Time.now.ctime)                       # Output the current time to the client
+  filename = lines[0].gsub(/GET \//, '').gsub(/ HTTP.*/, '')
+
+  if File.exist?(filename)
+  	response = File.read(filename)
+  else
+  	response = "File Not Found"
+  end
+
+  # "index".html HTTP/1.1"
+  # filename.gsub(/ HTTP.*/, '')
+  # # "index.html"
+
+  response1 = File.read('index.html')
+
+  client.puts response                      # Output the current time to the client
   client.close                                      # Disconnect from the client
 end
